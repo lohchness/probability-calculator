@@ -10,43 +10,49 @@ class Hat:
                 self.contents.append(color)
     
     def draw(self, num):
-        total_num = len(self.contents)
-        num_list = []
-        updated_contents = []
-        self.drawn_balls = []
+        drawn_balls = []
         if num > len(self.contents):
-            pass
+            return self.contents
         else:
-            self.drawn_balls = random.sample(self.contents, k=num) # Generates x unique random numbers within a given range
-            for x in self.drawn_balls:
+            drawn_balls = random.sample(self.contents, k=num) # Generates x unique random numbers within a given range
+            for x in drawn_balls:
                 self.contents.remove(x)
-            return self.drawn_balls
+            return drawn_balls
         # Subtracts drawn_balls from self.contents
         # self.contents = set([self.contents]) - set([drawn_balls])
             # does not work since sets only contain unique items - eg set([green, green, blue]) = ([green, blue])
         # self.contents = [x for x in self.contents if x not in drawn_balls]
             # not sure why this doesnt work
     
-
-    # loop number of experiments
-        # hat.draw(num_balls_drawn)
-            # check that expected_balls = drawn_balls
-            # num_success += 1
 def experiment(hat, expected_balls, num_balls_drawn, num_experiments):
     expected_balls_contents = []
     num_success = 0
-    for color, count in expected_balls.items():
-        for i in range(count):
-            expected_balls_contents.append(i)
-            # lists the colors*count of the balls
+    # for color, count in expected_balls.items():
+    #     for i in range(count):
+    #         expected_balls_contents.append(color)
+    #         # lists the colors*count of the balls
     for i in range(num_experiments):
+      success = True
+      correct_color = 0
       copyhat = copy.deepcopy(hat)
-      copyhat.draw(num_balls_drawn)
-      for j in expected_balls_contents:
-        if j in copyhat.drawn_balls:
-            copyhat.drawn_balls.remove(j)
-        if len(copyhat.drawn_balls) == 0:
-          num_success += 1
+      # copyhat.draw(num_balls_drawn)
+      # drawn_balls = random.sample(copyhat.contents, k=num_balls_drawn)
+      drawn_balls = copyhat.draw(num_balls_drawn)
+      # if drawn_balls == expected_balls_contents:
+      #   num_success += 1
+      # for x in drawn_balls:
+      #     copyhat.contents.remove(x)
+      for key in expected_balls.keys():
+        # if drawn_balls.count(key) >= expected_balls[key]:
+      #   if j in drawn_balls:
+          if drawn_balls.count(key) < expected_balls[key]:
+            success = False
+            break
+          correct_color += 1
+      # if correct_color == len(expected_balls):
+      #   num_success += 1
+      if success:
+        num_success += 1
     
-    probability = float(num_success)/num_experiments
+    probability =  float(num_success) / num_experiments
     return probability
